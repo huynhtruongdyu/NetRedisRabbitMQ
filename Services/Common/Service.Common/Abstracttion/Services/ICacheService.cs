@@ -1,5 +1,7 @@
 ﻿using StackExchange.Redis;
 
+using System.Threading.Tasks;
+
 namespace Service.Common.Abstracttion.Services
 {
     public interface ICacheService
@@ -7,6 +9,8 @@ namespace Service.Common.Abstracttion.Services
         T? Get<T>(string cacheKey);
 
         void Set<T>(string cacheKey, T value);
+
+        T? SetAndGet<T>(string cacheKey, T value);
 
         bool SetIfNotExists<T>(string cacheKey, T value);
 
@@ -25,6 +29,8 @@ namespace Service.Common.Abstracttion.Services
 
         Task SetAsync<T>(string cacheKey, T value);
 
+        Task<T?> SetAndGetAsync<T>(string cacheKey, T value);
+
         Task<bool> SetIfNotExistsAsync<T>(string cacheKey, T value);
 
         Task RemoveAsync(string cachKey);
@@ -36,5 +42,9 @@ namespace Service.Common.Abstracttion.Services
         Task<long> IncreaseByAsync(string key, long quantity);
 
         Task<long> DecreaseByAsync(string key, long quantity);
+
+        //==/
+
+        ITransaction CreateTransaction();
     }
 }

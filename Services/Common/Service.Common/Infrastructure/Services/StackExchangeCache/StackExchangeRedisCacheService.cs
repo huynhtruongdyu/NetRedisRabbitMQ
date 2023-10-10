@@ -98,10 +98,32 @@ namespace Service.Common.Infrastructure.Services.StackExchangeCache
             _db.StringSet(cacheKey, valueString);
         }
 
+        public T? SetAndGet<T>(string cacheKey, T value)
+        {
+            string valueString = JsonConvert.SerializeObject(value);
+            var cacheValue = _db.StringSetAndGet(cacheKey, valueString);
+            if (!cacheValue.HasValue)
+            {
+                return default(T?);
+            }
+            return (T)Convert.ChangeType(cacheValue, typeof(T));
+        }
+
         public async Task SetAsync<T>(string cacheKey, T value)
         {
             string valueString = JsonConvert.SerializeObject(value);
             await _db.StringSetAsync(cacheKey, valueString);
+        }
+
+        public async Task<T?> SetAndGetAsync<T>(string cacheKey, T value)
+        {
+            string valueString = JsonConvert.SerializeObject(value);
+            var cacheValue = await _db.StringSetAndGetAsync(cacheKey, valueString);
+            if (!cacheValue.HasValue)
+            {
+                return default(T?);
+            }
+            return (T)Convert.ChangeType(cacheValue, typeof(T));
         }
 
         public bool SetIfNotExists<T>(string cacheKey, T value)
@@ -145,6 +167,8 @@ namespace Service.Common.Infrastructure.Services.StackExchangeCache
         {
             return await _db.StringDecrementAsync(key, quantity);
         }
+
+        public ITransaction CreateTransaction() => _db.CreateTransaction();
 
         #endregion public methods
     }
