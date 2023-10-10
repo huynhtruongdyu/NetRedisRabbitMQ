@@ -66,7 +66,8 @@ namespace EventBusRabbitMQ.Bus
 
         #region public methods
 
-        public void Publish(IntegrationEvent @event)
+        public void Publish<TEvent>(TEvent @event)
+            where TEvent : IntegrationEvent
         {
             if (!_persistentConnection.IsConnected)
             {
@@ -91,7 +92,7 @@ namespace EventBusRabbitMQ.Bus
 
                 channel.ExchangeDeclare(exchange: _exchangeName, type: "direct");
 
-                var message = JsonSerializer.Serialize(@event);
+                var message = JsonSerializer.Serialize<TEvent>(@event);
                 var body = Encoding.UTF8.GetBytes(message);
 
                 policy.Execute(() =>

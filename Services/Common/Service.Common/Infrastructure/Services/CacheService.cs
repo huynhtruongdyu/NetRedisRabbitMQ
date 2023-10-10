@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Service.Common.Abstracttion.Services;
 
 using System.Collections.Concurrent;
+using System.Text;
 
 namespace Service.Common.Infrastructure.Services
 {
@@ -20,12 +21,12 @@ namespace Service.Common.Infrastructure.Services
 
         public async Task<T?> GetAsync<T>(string cacheKey, CancellationToken cancellationToken = default)
         {
-            string? cacheValue = await _distributedCache.GetStringAsync(cacheKey, cancellationToken);
+            byte[]? cacheValue = await _distributedCache.GetAsync(cacheKey, cancellationToken);
             if (cacheValue == null)
             {
                 return default(T?);
             }
-            T? value = JsonConvert.DeserializeObject<T>(cacheValue);
+            T? value = JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(cacheValue));
             return value;
         }
 
@@ -44,7 +45,7 @@ namespace Service.Common.Infrastructure.Services
         public async Task SetAsync<T>(string cacheKey, T value, CancellationToken cancellationToken = default)
         {
             string cacheValue = JsonConvert.SerializeObject(value);
-            await _distributedCache.SetStringAsync(cacheKey, cacheValue, cancellationToken);
+            await _distributedCache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(cacheValue), cancellationToken);
             CacheKeys.TryAdd(cacheKey, false);
         }
     }

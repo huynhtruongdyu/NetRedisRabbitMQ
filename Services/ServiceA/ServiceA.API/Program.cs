@@ -1,5 +1,7 @@
 using Service.Common.Abstracttion.Services;
 using Service.Common.Infrastructure.Services;
+using EventBusRabbitMQ;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +18,23 @@ builder.Services.AddStackExchangeRedisCache(option =>
     option.Configuration = "192.168.18.227:6379";
     option.InstanceName = "GoFnb";
 });
-
 builder.Services.AddSingleton<ICacheService, CacheService>();
+
+//Add RabbitMQ event bus
+{
+    var rabbitMQSection = builder.Configuration.GetSection("RabbitMQ");
+    if (rabbitMQSection == null)
+    {
+        throw new ArgumentNullException(nameof(rabbitMQSection));
+    }
+    builder.Services.AddRabbitMQEventBus
+    (
+        connectionUrl: rabbitMQSection["ConnectionUrl"],
+        brokerName: rabbitMQSection["Broker"],
+        queueName: rabbitMQSection["Queue"],
+        timeoutBeforeReconnecting: int.Parse(rabbitMQSection["TimeoutBeforeReconnecting"])
+    );
+}
 
 var app = builder.Build();
 
