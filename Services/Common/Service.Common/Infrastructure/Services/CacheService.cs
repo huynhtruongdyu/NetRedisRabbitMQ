@@ -37,13 +37,6 @@ namespace Service.Common.Infrastructure.Services
 
         public async Task RemoveByPrefixAsync(string prefixKey, CancellationToken cancellationToken = default)
         {
-            //foreach (var key in CacheKeys.Keys)
-            //{
-            //    if (key.StartsWith(prefixKey))
-            //    {
-            //        await _distributedCache.RemoveAsync(key, cancellationToken);
-            //    }
-            //}
             IEnumerable<Task> removeAsyncTasks = CacheKeys.Keys.Where(key => key.StartsWith(prefixKey)).Select(key => RemoveAsync(key, cancellationToken));
             await Task.WhenAll(removeAsyncTasks);
         }
