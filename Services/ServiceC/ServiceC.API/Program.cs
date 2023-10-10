@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen();
     );
 
     builder.Services.AddTransient<MessageSentEventHandler>();
+    builder.Services.AddTransient<CreateOrderEventHandler>();
 }
 var app = builder.Build();
 
@@ -61,5 +62,6 @@ app.MapControllers();
 var eventBus = app.Services.GetRequiredService<IEventBus>();
 
 eventBus.Subscribe<MessageSentEvent, MessageSentEventHandler>();
+eventBus.Subscribe<CreateOrderEvent, CreateOrderEventHandler>();
 
 app.Run();

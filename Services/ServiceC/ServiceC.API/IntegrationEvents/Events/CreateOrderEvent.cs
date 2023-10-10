@@ -1,12 +1,9 @@
 ﻿using EventBus.Events;
 
-using System.Text.Json.Serialization;
-
-namespace ServiceA.API.IntegrationEvents.Events
+namespace ServiceC.API.IntegrationEvents.Events
 {
     public class CreateOrderEvent : IntegrationEvent
     {
-        [JsonInclude]
         public Guid ProductId { get; set; } = Guid.NewGuid();
     }
 }

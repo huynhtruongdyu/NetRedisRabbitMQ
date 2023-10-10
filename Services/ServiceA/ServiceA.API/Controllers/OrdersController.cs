@@ -29,18 +29,25 @@ namespace ServiceA.API.Controllers
             var materialCache = await _cache.GetAsync("material");
             if (materialCache == null)
             {
-                await _cache.SetAsync("material", BitConverter.GetBytes(10));
+                await _cache.SetStringAsync("material", "10");
             }
 
-            var material = int.Parse(Encoding.UTF8.GetString(await _cache.GetAsync("material")));
-            if (material < 0)
+            var newMaterialCache = await _cache.GetStringAsync("material");
+            if (newMaterialCache == null)
+            {
+                return BadRequest();
+            }
+
+            var material = int.Parse(newMaterialCache);
+            if (material == 0)
             {
                 return BadRequest("Not enough material");
             }
             else
             {
-                _eventBus.Publish(new CreateOrderEvent());
-                await _cache.SetAsync("material", BitConverter.GetBytes(material - 1));
+                //_eventBus.Publish<CreateOrderEvent>(new CreateOrderEvent());
+                Console.WriteLine((material - 1).ToString());
+                await _cache.SetStringAsync("material", (material - 1).ToString());
                 return Ok("order created");
             }
         }

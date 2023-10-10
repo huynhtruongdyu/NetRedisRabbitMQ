@@ -8,10 +8,8 @@ namespace ServiceB.API.IntegrationEvents.EventHandlers
     {
         public async Task HandleAsync(MessageSentEvent @event)
         {
-            Console.WriteLine(DateTime.Now.ToShortTimeString());
-            await Task.Delay(5000);
-            var message = @event.Message;
-            Console.WriteLine("message: " + @event.ToString());
+            Console.WriteLine(DateTime.Now);
+            await Task.Delay(6000);
         }
     }
 }

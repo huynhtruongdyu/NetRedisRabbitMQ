@@ -17,6 +17,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Channels;
 
 namespace EventBusRabbitMQ.Bus
 {
@@ -170,13 +171,16 @@ namespace EventBusRabbitMQ.Bus
             var channel = _persistentConnection.CreateModel();
 
             channel.ExchangeDeclare(exchange: _exchangeName, type: "direct");
+            IDictionary<String, Object> arguments = new Dictionary<String, Object>();
+            arguments.Add("x-single-active-consumer", true);
+
             channel.QueueDeclare
             (
                 queue: _queueName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null
+                arguments
             );
 
             channel.CallbackException += (sender, ea) =>
@@ -320,6 +324,7 @@ namespace EventBusRabbitMQ.Bus
             {
                 await ProcessEvent(eventName, message);
 
+                _consumerChannel.BasicQos(0, 1, false);
                 _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
                 isAcknowledged = true;
             }
