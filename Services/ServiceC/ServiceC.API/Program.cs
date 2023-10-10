@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
     builder.Services.AddStackExchangeRedisCache(option =>
     {
         option.Configuration = "192.168.18.227:6379";
-        option.InstanceName = "GoFnb";
+        option.InstanceName = "GoFnb:";
     });
     builder.Services.AddSingleton<ICacheService, CacheService>();
 }
