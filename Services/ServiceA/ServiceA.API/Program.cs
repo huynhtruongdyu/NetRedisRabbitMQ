@@ -2,6 +2,8 @@ using Service.Common.Abstracttion.Services;
 using Service.Common.Infrastructure.Services;
 using EventBusRabbitMQ;
 using Microsoft.Extensions.Configuration;
+using StackExchange.Redis;
+using Service.Common.Infrastructure.Services.StackExchangeCache;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,12 +15,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Add Redis cache
-builder.Services.AddStackExchangeRedisCache(option =>
-{
-    option.Configuration = "192.168.18.227:6379";
-    option.InstanceName = "GoFnb:";
-});
-builder.Services.AddSingleton<ICacheService, CacheService>();
+//builder.Services.AddStackExchangeRedisCache(option =>
+//{
+//    option.Configuration = "192.168.18.227:6379";
+//    option.InstanceName = "GoFnb:";
+//});
+//builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("192.168.18.227:6379"));
+builder.Services.AddSingleton<IRedisConnectionFactory>(provider => new RedisConnectionFactory("192.168.18.227:6379"));
+builder.Services.AddScoped<ICacheService, StackExchangeCacheService>();
 
 //Add RabbitMQ event bus
 {

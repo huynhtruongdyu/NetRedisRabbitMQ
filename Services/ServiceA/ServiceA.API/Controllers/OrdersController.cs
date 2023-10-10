@@ -28,26 +28,18 @@ namespace ServiceA.API.Controllers
         [HttpPost("place-order")]
         public async Task<IActionResult> PlaceOrderAsync()
         {
-            await _cache.SetIfNotExistsAsync<string>("material", "10");
+            _cache.SetIfNotExists<int>("material", 10);
 
-            var newMaterialCache = await _cache.GetAsync<string>("material");
-            if (newMaterialCache == null)
+            var newMaterialCache = _cache.Get<int>("material");
+            if (newMaterialCache == 0)
             {
                 return BadRequest();
             }
 
-            var material = int.Parse(newMaterialCache);
-            if (material == 0)
-            {
-                return BadRequest("Not enough material");
-            }
-            else
-            {
-                //_eventBus.Publish<CreateOrderEvent>(new CreateOrderEvent());
-                await _cache.SetAsync<string>("material", (material - 1).ToString());
-                Console.WriteLine((material - 1).ToString());
-                return Ok("order created");
-            }
+            //_eventBus.Publish<CreateOrderEvent>(new CreateOrderEvent());
+            _cache.Set<int>("material", newMaterialCache - 1);
+            Console.WriteLine((newMaterialCache - 1).ToString());
+            return Ok("order created");
         }
     }
 }

@@ -18,28 +18,28 @@ namespace ServiceB.API.Controllers
         [HttpGet("{cacheKey}")]
         public async Task<IActionResult> GetAsync([FromRoute] string cacheKey)
         {
-            var cacheValue = await _cacheService.GetAsync<string>(cacheKey);
+            var cacheValue = _cacheService.Get<string>(cacheKey);
             return Ok(cacheValue);
         }
 
         [HttpPost("{cacheKey}")]
         public async Task<IActionResult> PostAsync([FromRoute] string cacheKey, [FromBody] string value)
         {
-            await _cacheService.SetAsync<string>(cacheKey, value);
+            _cacheService.Set<string>(cacheKey, value);
             return Ok();
         }
 
         [HttpDelete("{cacheKey}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] string cacheKey)
         {
-            await _cacheService.RemoveAsync(cacheKey);
+            _cacheService.Remove(cacheKey);
             return Ok();
         }
 
         [HttpDelete("prefix/{prefixKey}")]
         public async Task<IActionResult> DeleteByPrefixAsync([FromRoute] string prefixKey)
         {
-            await _cacheService.RemoveByPrefixAsync(prefixKey);
+            _cacheService.RemoveByPrefix(prefixKey);
             return Ok();
         }
     }
