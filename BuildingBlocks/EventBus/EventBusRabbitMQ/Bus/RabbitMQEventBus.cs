@@ -93,7 +93,7 @@ namespace EventBusRabbitMQ.Bus
                 channel.ExchangeDeclare(exchange: _exchangeName, type: "direct");
 
                 // Set the prefetch count
-                //channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
                 var message = JsonSerializer.Serialize<TEvent>(@event);
                 var body = Encoding.UTF8.GetBytes(message);
