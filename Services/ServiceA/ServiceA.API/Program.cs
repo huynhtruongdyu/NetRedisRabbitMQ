@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 //});
 //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("192.168.18.227:6379"));
 builder.Services.AddSingleton<IRedisConnectionFactory>(provider => new RedisConnectionFactory("192.168.18.227:6379"));
-builder.Services.AddScoped<ICacheService, StackExchangeCacheService>();
+builder.Services.AddScoped<ICacheService, StackExchangeRedisCacheService>();
 
 //Add RabbitMQ event bus
 {

@@ -28,17 +28,29 @@ namespace ServiceA.API.Controllers
         [HttpPost("place-order")]
         public async Task<IActionResult> PlaceOrderAsync()
         {
-            _cache.SetIfNotExists<int>("material", 10);
-
-            var newMaterialCache = _cache.Get<int>("material");
-            if (newMaterialCache == 0)
+            if (!_cache.KeyExists("iphone13"))
             {
-                return BadRequest();
+                _cache.SetIfNotExists<long>("iphone13", 0);
+            }
+
+            var slBanra = _cache.Get<long>("iphone13");
+            Console.WriteLine("So luong truoc khi ban: " + slBanra);
+            slBanra = _cache.IncreaseBy("iphone13", 1);
+
+            if (slBanra > 10)
+            {
+                Console.WriteLine("het hang");
+                return BadRequest("het hang");
+            }
+
+            Console.WriteLine("So luong sau khi ban: " + slBanra);
+
+            if (slBanra > 10)
+            {
+                _cache.Set<bool>("banquaroi", true);
             }
 
             //_eventBus.Publish<CreateOrderEvent>(new CreateOrderEvent());
-            _cache.Set<int>("material", newMaterialCache - 1);
-            Console.WriteLine((newMaterialCache - 1).ToString());
             return Ok("order created");
         }
     }

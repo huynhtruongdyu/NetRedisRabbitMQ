@@ -1,4 +1,6 @@
-﻿namespace Service.Common.Abstracttion.Services
+﻿using StackExchange.Redis;
+
+namespace Service.Common.Abstracttion.Services
 {
     public interface ICacheService
     {
@@ -11,5 +13,28 @@
         void Remove(string cachKey);
 
         void RemoveByPrefix(string prefixKey);
+
+        bool KeyExists(string key);
+
+        long IncreaseBy(string key, long quantity);
+
+        long DecreaseBy(string key, long quantity);
+
+        //==//
+        Task<T?> GetAsync<T>(string cacheKey);
+
+        Task SetAsync<T>(string cacheKey, T value);
+
+        Task<bool> SetIfNotExistsAsync<T>(string cacheKey, T value);
+
+        Task RemoveAsync(string cachKey);
+
+        Task RemoveByPrefixAsync(string prefixKey);
+
+        Task<bool> KeyExistsAsync(string key);
+
+        Task<long> IncreaseByAsync(string key, long quantity);
+
+        Task<long> DecreaseByAsync(string key, long quantity);
     }
 }

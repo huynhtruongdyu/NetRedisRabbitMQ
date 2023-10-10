@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen();
 //    builder.Services.AddSingleton<ICacheService, CacheService>();
 //}
 builder.Services.AddSingleton<IRedisConnectionFactory>(provider => new RedisConnectionFactory("192.168.18.227:6379"));
-builder.Services.AddScoped<ICacheService, StackExchangeCacheService>();
+builder.Services.AddScoped<ICacheService, StackExchangeRedisCacheService>();
 
 //Add RabbitMQ event bus
 {
