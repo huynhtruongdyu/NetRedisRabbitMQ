@@ -48,5 +48,18 @@ namespace Service.Common.Infrastructure.Services
             await _distributedCache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(cacheValue), cancellationToken);
             CacheKeys.TryAdd(cacheKey, false);
         }
+
+        public async Task<bool> SetIfNotExistsAsync<T>(string cacheKey, T value, CancellationToken cancellationToken = default)
+        {
+            var existsValue = await _distributedCache.GetStringAsync(cacheKey);
+            if (existsValue != null)
+            {
+                return false;
+            }
+            string cacheValue = JsonConvert.SerializeObject(value);
+            await _distributedCache.SetAsync(cacheKey, Encoding.UTF8.GetBytes(cacheValue), cancellationToken);
+            CacheKeys.TryAdd(cacheKey, false);
+            return true;
+        }
     }
 }

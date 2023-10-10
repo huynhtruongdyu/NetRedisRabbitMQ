@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 
+using Service.Common.Abstracttion.Services;
+
 using ServiceA.API.IntegrationEvents.Events;
 
 using System.Text;
@@ -14,10 +16,10 @@ namespace ServiceA.API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly IDistributedCache _cache;
+        private readonly ICacheService _cache;
         private readonly IEventBus _eventBus;
 
-        public OrdersController(IDistributedCache cache, IEventBus eventBus)
+        public OrdersController(ICacheService cache, IEventBus eventBus)
         {
             _cache = cache;
             _eventBus = eventBus;
@@ -26,13 +28,9 @@ namespace ServiceA.API.Controllers
         [HttpPost("place-order")]
         public async Task<IActionResult> PlaceOrderAsync()
         {
-            var materialCache = await _cache.GetAsync("material");
-            if (materialCache == null)
-            {
-                await _cache.SetStringAsync("material", "10");
-            }
+            await _cache.SetIfNotExistsAsync<string>("material", "10");
 
-            var newMaterialCache = await _cache.GetStringAsync("material");
+            var newMaterialCache = await _cache.GetAsync<string>("material");
             if (newMaterialCache == null)
             {
                 return BadRequest();
@@ -46,8 +44,8 @@ namespace ServiceA.API.Controllers
             else
             {
                 //_eventBus.Publish<CreateOrderEvent>(new CreateOrderEvent());
+                await _cache.SetAsync<string>("material", (material - 1).ToString());
                 Console.WriteLine((material - 1).ToString());
-                await _cache.SetStringAsync("material", (material - 1).ToString());
                 return Ok("order created");
             }
         }
