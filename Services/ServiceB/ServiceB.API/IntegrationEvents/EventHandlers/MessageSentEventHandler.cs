@@ -6,11 +6,11 @@ namespace ServiceB.API.IntegrationEvents.EventHandlers
 {
     public class MessageSentEventHandler : IIntegrationEventHandler<MessageSentEvent>
     {
-        public Task HandleAsync(MessageSentEvent @event)
+        public async Task HandleAsync(MessageSentEvent @event)
         {
+            await Task.Delay(1000);
             var message = @event.Message;
             Console.WriteLine("message: " + @event.ToString());
-            return Task.CompletedTask;
         }
     }
 }
