@@ -8,5 +8,8 @@ namespace ServiceA.API.IntegrationEvents.Events
     {
         [JsonInclude]
         public Guid ProductId { get; set; } = Guid.NewGuid();
+
+        [JsonInclude]
+        public int Quantity { get; set; } = 1;
     }
 }
