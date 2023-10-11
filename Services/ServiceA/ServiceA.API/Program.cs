@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 //    option.InstanceName = "GoFnb:";
 //});
 //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("192.168.18.227:6379"));
-builder.Services.AddSingleton<IRedisConnectionFactory>(provider => new RedisConnectionFactory("192.168.18.227:6379"));
+builder.Services.AddSingleton<IRedisConnectionFactory>(provider => new RedisConnectionFactory("localhost:6379,abortConnect=false,connectTimeout=30000,responseTimeout=30000"));
 builder.Services.AddScoped<ICacheService, StackExchangeRedisCacheService>();
 
 //Add RabbitMQ event bus
