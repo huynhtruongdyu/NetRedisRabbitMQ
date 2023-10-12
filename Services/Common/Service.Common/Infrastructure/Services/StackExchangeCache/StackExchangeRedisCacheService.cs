@@ -45,14 +45,15 @@ namespace Service.Common.Infrastructure.Services.StackExchangeCache
             {
                 return default(T?);
             }
-            //string json = cacheValue.ToString();
-            //if (string.IsNullOrEmpty(json))
-            //{
-            //    return default(T?);
-            //}
-            //T? value = JsonConvert.DeserializeObject<T>(json);
-            //return value;
-            return (T)Convert.ChangeType(cacheValue, typeof(T));
+            try
+            {
+                T? value = JsonConvert.DeserializeObject<T>(cacheValue);
+                return value;
+            }
+            catch (Exception)
+            {
+                return default(T?);
+            }
         }
 
         public async Task<T?> GetAsync<T>(string cacheKey)
@@ -62,7 +63,15 @@ namespace Service.Common.Infrastructure.Services.StackExchangeCache
             {
                 return default(T?);
             }
-            return (T)Convert.ChangeType(cacheValue, typeof(T));
+            try
+            {
+                T? value = JsonConvert.DeserializeObject<T>(cacheValue);
+                return value;
+            }
+            catch (Exception)
+            {
+                return default(T?);
+            }
         }
 
         public void Remove(string cachKey)
