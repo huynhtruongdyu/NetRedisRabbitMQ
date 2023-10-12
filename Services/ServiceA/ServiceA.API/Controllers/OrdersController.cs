@@ -38,6 +38,7 @@ namespace ServiceA.API.Controllers
             if (slBanra > 10)
             {
                 Console.WriteLine("het hang");
+                await _cache.DecreaseByAsync("iphone13", 1);
                 return BadRequest("het hang");
             }
 
